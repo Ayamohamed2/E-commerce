@@ -1,0 +1,104 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Manage Email";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+    bool hasExternalLogins = false;
+    @using E_commerce.Model.Models
+    @inject UserManager<ApplicationUser> _userManager
+    var user = await _userManager.GetUserAsync(User);
+    if (user != null)
+    {
+        var logins = await _userManager.GetLoginsAsync(user);
+
+        hasExternalLogins = logins.Any();
+    }
+}
+
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        
+        <div class="col-lg-4 bg-dark text-white d-flex flex-column align-items-center justify-content-start p-4">
+           
+            <div class="text-center mb-4">
+                <img src="@(!string.IsNullOrEmpty(Model.Input?.imageProfile)
+                             ? Url.Content(Model.Input.imageProfile)
+                             : Url.Content("~/images/default-user.png"))"
+                     alt="Profile Picture"
+                     class="rounded-circle border border-3 border-primary shadow mb-3"
+                     style="width:130px; height:130px; object-fit:cover;" />
+
+                <h4 class="fw-bold text-white">@Model.Input?.Name</h4>
+                <p class="text-light small mb-1">@User.Identity?.Name</p>
+                <span class="badge bg-primary px-3 py-2">@Model.Input?.Role</span>
+            </div>
+
+            
+            <ul class="nav flex-column nav-pills w-100">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+                        <i class="bi bi-envelope"></i> Email
+                    </a>
+                </li>
+                @if (!hasExternalLogins)
+                {
+
+                    <li class="nav-item mb-2">
+                        <a class="nav-link text-white @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">
+                            <i class="bi bi-lock"></i> Password
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+     
+        <div class="col-lg-8 bg-secondary text-white p-5">
+            <h3 class="mb-4 text-primary"><i class="bi bi-envelope"></i> Manage Email</h3>
+
+            <partial name="_StatusMessage" for="StatusMessage" />
+
+            <form id="email-form" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3" role="alert"></div>
+
+                @if (Model.IsEmailConfirmed)
+                {
+                    <div class="form-floating mb-3 input-group">
+                        <input asp-for="Email" class="form-control bg-dark text-white border-0" placeholder="Please enter your email." disabled />
+                        <div class="input-group-append">
+                            <span class="h-100 input-group-text text-success fw-bold">✓</span>
+                        </div>
+                        <label asp-for="Email" class="text-light"></label>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control bg-dark text-white border-0" placeholder="Please enter your email." disabled />
+                        <label asp-for="Email" class="text-light"></label>
+                        <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link text-primary">Send verification email</button>
+                    </div>
+                }
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.NewEmail" class="form-control bg-dark text-white border-0" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
+                    <label asp-for="Input.NewEmail" class="text-light"></label>
+                    <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+                </div>
+
+                <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary w-100 rounded-pill shadow mt-3 py-2">
+                    <i class="bi bi-save"></i> Change Email
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

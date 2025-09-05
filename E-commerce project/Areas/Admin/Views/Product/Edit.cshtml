@@ -1,0 +1,156 @@
+﻿@model Product
+@{
+    SelectList category = new SelectList(ViewBag.categories, "Id", "Name");
+}
+
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-gradient bg-secondary text-white text-center py-3">
+            <h2 class="mb-0">Edit Product</h2>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" asp-action="edit" enctype="multipart/form-data" asp-controller="Product">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        @for (int i = 0; i < Model.ProductImages.Count; i++)
+                        {
+                            <div class="card shadow-sm border-0 mb-3">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Image @(@i + 1)</h6>
+                                    <img id="previewImage-@i"
+                                         src="@(!string.IsNullOrEmpty(Model.ProductImages[i].ImageURL) ? Url.Content(Model.ProductImages[i].ImageURL) : Url.Content("~/images/no-image.png"))"
+                                         alt="Product Image"
+                                         class="img-fluid rounded shadow-sm border mb-2"
+                                         style="max-height:200px; object-fit:cover;" />
+
+                                    <input type="hidden" asp-for="ProductImages[i].id" />
+                                    <input type="hidden" asp-for="ProductImages[i].ImageURL" />
+                                    <input type="hidden" asp-for="ProductImages[i].Product_Id" />
+                                    <a asp-action="DeleteImage" class="btn btn-danger" asp-route-imageId="@Model.ProductImages[i].id">
+                                        <i class="bi bi-trash-fill"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                
+                    <div class="col-md-8">
+                        <div class="row g-3">
+
+                            <div class="form-floating col-12">
+                                <input asp-for="title" class="form-control border-0 shadow" />
+                                <label class="text-muted">Title</label>
+                                <span asp-validation-for="title" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="text-muted">Description</label>
+                                <textarea asp-for="Discription" class="form-control border-0 shadow" rows="4" id="myEditor"></textarea>
+                                <span asp-validation-for="Discription" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-md-6">
+                                <input asp-for="ISBN" class="form-control border-0 shadow" />
+                                <label class="text-muted">ISBN</label>
+                                <span asp-validation-for="ISBN" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-md-6">
+                                <input asp-for="Author" class="form-control border-0 shadow" />
+                                <label class="text-muted">Author</label>
+                                <span asp-validation-for="Author" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-md-6">
+                                <input asp-for="ListPrice" class="form-control border-0 shadow" />
+                                <label class="text-muted">List Price</label>
+                                <span asp-validation-for="ListPrice" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-md-6">
+                                <input asp-for="price" class="form-control border-0 shadow" />
+                                <label class="text-muted">Price</label>
+                                <span asp-validation-for="price" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-md-6">
+                                <input asp-for="price50" class="form-control border-0 shadow" />
+                                <label class="text-muted">Price 50+</label>
+                                <span asp-validation-for="price50" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-md-6">
+                                <input asp-for="price100" class="form-control border-0 shadow" />
+                                <label class="text-muted">Price 100+</label>
+                                <span asp-validation-for="price100" class="text-danger"></span>
+                            </div>
+
+                            <!-- مكان رفع الصور الجديدة -->
+                            <div class="form-floating py-2 col-12">
+                                <input name="NewImages" type="file" class="form-control border-0 shadow" multiple />
+                                <label class="ms-2">Upload New Images</label>
+                                <span asp-validation-for="files" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating col-12">
+                                <select asp-for="Category_id" asp-items="category" class="form-select border-0 shadow-sm">
+                                    <option value="">--Select Category--</option>
+                                </select>
+                                <label class="text-muted">Category</label>
+                                <span asp-validation-for="Category_id" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-2">
+                                <button type="submit" class="btn btn-secondary w-100 py-2">Update</button>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-action="index" class="btn btn-outline-secondary w-100 py-2">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+                    function previewFile(event, previewId) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        document.getElementById(previewId).src = reader.result;
+                    };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Sep 19, 2025:
+                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'ai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+            uploadcare_public_key: '65d2ebb101e3091468f8',
+        });
+    </script>
+    
+    <partial name="_ValidationScriptsPartial" />
+}

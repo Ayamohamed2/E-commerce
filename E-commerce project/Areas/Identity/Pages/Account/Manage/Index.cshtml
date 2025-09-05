@@ -1,0 +1,133 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+    bool hasExternalLogins=false;
+    @using E_commerce.Model.Models
+    @inject UserManager<ApplicationUser> _userManager
+    var user = await _userManager.GetUserAsync(User);
+    if (user != null)
+    {
+        var logins = await _userManager.GetLoginsAsync(user);
+       
+        hasExternalLogins = logins.Any();
+    }
+}
+
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+     
+        <div class="col-lg-4 bg-dark text-white d-flex flex-column align-items-center justify-content-start p-4">
+        
+            <div class="text-center mb-4">
+                <img src="@(!string.IsNullOrEmpty(Model.Input.imageProfile)
+                             ? Url.Content(Model.Input.imageProfile)
+                             : Url.Content("~/images/default-user.png"))"
+                     alt="Profile Picture"
+                     class="rounded-circle border border-3 border-primary shadow mb-3"
+                     style="width:130px; height:130px; object-fit:cover;" />
+
+                <h4 class="fw-bold text-white">@Model.Input.Name</h4>
+                <p class="text-light small mb-1">@Model.Username</p>
+                <span class="badge bg-primary px-3 py-2">@Model.Input.Role</span>
+            </div>
+
+         
+            <ul class="nav flex-column nav-pills w-100">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+                        <i class="bi bi-envelope"></i> Email
+                    </a>
+                </li>
+          
+                 @if (!hasExternalLogins){
+
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">
+                        <i class="bi bi-lock"></i> Password
+                    </a>
+                </li>
+                 }
+                
+            </ul>
+        </div>
+
+           <div class="col-lg-8 bg-secondary text-white p-5">
+            <h3 class="mb-4 text-primary"><i class="bi bi-gear"></i> Manage Profile</h3>
+
+            <partial name="_StatusMessage" for="StatusMessage" />
+
+            <form id="profile-form" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Username" class="form-control bg-dark text-white border-0" disabled />
+                    <label asp-for="Username" class="text-light"></label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Name" class="form-control bg-dark text-white border-0" />
+                    <label asp-for="Input.Name" class="text-light"></label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.PhoneNumber" class="form-control bg-dark text-white border-0" />
+                    <label asp-for="Input.PhoneNumber" class="text-light"></label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.StreetAddress" class="form-control bg-dark text-white border-0" />
+                    <label asp-for="Input.StreetAddress" class="text-light"></label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.City" class="form-control bg-dark text-white border-0" />
+                    <label asp-for="Input.City" class="text-light"></label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.State" class="form-control bg-dark text-white border-0" />
+                    <label asp-for="Input.State" class="text-light"></label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.PostalCode" class="form-control bg-dark text-white border-0" />
+                    <label asp-for="Input.PostalCode" class="text-light"></label>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Profile Picture</label>
+                    <input asp-for="Input.ProfilePictureFile" type="file" class="form-control bg-dark text-white border-0" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-semibold">Role</label>
+                    <input value="@Model.Input.Role" class="form-control bg-dark text-white border-0" disabled />
+                </div>
+
+                @if (User.IsInRole(SD.Role_Company))
+                {
+                    <div class="mb-3">
+                        <label class="fw-semibold">Company</label>
+                        <input value="@Model.Input.CompanyName" class="form-control bg-dark text-white border-0" disabled />
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-primary w-100 rounded-pill shadow mt-3 py-2">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

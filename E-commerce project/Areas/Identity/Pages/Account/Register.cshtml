@@ -1,0 +1,149 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="register-page d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden" style="max-width: 950px; width: 100%;">
+        <div class="row g-0">
+
+          
+            <div class="col-md-6 p-5 bg-white">
+                <h2 class="fw-bold mb-3 text-uppercase text-dark">Create Account</h2>
+                <p class="text-muted mb-4">Join our community and explore endless books 📚</p>
+
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Name" class="form-control rounded-3" placeholder="Name" />
+                        <label asp-for="Input.Name">Name</label>
+                        <span asp-validation-for="Input.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control rounded-3" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control rounded-3" placeholder="Password" />
+                        <label asp-for="Input.Password">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.ConfirmPassword" class="form-control rounded-3" placeholder="Confirm Password" />
+                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <div class="form-floating mb-4">
+                            <select asp-for="Input.Role" asp-items="@Model.Input.RoleList"
+                            class="form-select rounded-3" id="roleSelect">
+                                <option value="">-- Select Role --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-floating mb-4" id="companySelectWrapper" style="display:none;">
+                            <select asp-for="Input.Company_id" asp-items="@Model.Input.CompanyList"
+                            class="form-select rounded-3">
+                                <option value="">-- Select Company --</option>
+                            </select>
+                        </div>
+                    }
+
+                    <button id="registerSubmit" type="submit" 
+                            class="btn w-100 py-2 fw-bold rounded-3 text-white"
+                            style="background: linear-gradient(135deg, #5a9a9c, #417678); border:none;">
+                        Register 🚀
+                    </button>
+                </form>
+
+             
+
+            </div>
+
+            
+                <div class="col-md-6 d-flex flex-column justify-content-center align-items-center text-center text-white p-5" 
+                style="background: linear-gradient(135deg, #2c2c2c, #4d4d4d);">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                     class="img-fluid mb-4" style="max-height: 180px;" alt="Books">
+
+              
+                <h3 class="fw-bold" style="color:#5a9a9c;">Welcome Back!</h3>
+                @if (!User.IsInRole(SD.Role_Admin))
+                {
+                <p class="mb-4 text-light">Already have an account? Log in and continue your journey 📖</p>
+
+              
+                <a href="/Identity/Account/Login" 
+                   class="btn fw-bold w-75 rounded-3 text-white" 
+                   style="background: linear-gradient(135deg, #5a9a9c, #417678); border:none;">
+                   Login
+                </a>
+                    <hr class="my-2" />
+
+
+                    <div class="row g-3">
+                        <p class="text-center mb-3 ">Or register using:</p>
+                        <div class="col-12 col-md-6">
+                            <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="w-100">
+                                <button type="submit"
+                                        class="btn w-100 py-2 fw-bold rounded-3 d-flex align-items-center justify-content-center shadow-sm"
+                                        style="background: #ffffff; border:1px solid #ddd; color:#444;"
+                                        name="provider" value="Google">
+                                    <img src="https://www.svgrepo.com/show/355037/google.svg"
+                                         alt="Google" width="20" height="20" class="me-2" />
+                                    <span>Google</span>
+                                </button>
+                            </form>
+                        </div>
+
+                    
+                        <div class="col-12 col-md-6">
+                            <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="w-100">
+                                <button type="submit"
+                                        class="btn w-100 py-2 fw-bold rounded-3 d-flex align-items-center justify-content-center shadow-sm"
+                                        style="background: #1877f2; border:none; color:white;"
+                                        name="provider" value="Facebook">
+                                    <i class="fab fa-facebook-f me-2 fs-5"></i>
+                                    <span>Facebook</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleSelect = document.getElementById("roleSelect");
+            const companySelectWrapper = document.getElementById("companySelectWrapper");
+
+            function toggleCompanySelect() {
+                if (roleSelect && roleSelect.value.toLowerCase() === "company") {
+                    companySelectWrapper.style.display = "block";
+                } else {
+                    companySelectWrapper.style.display = "none";
+                }
+            }
+
+            if (roleSelect) {
+                toggleCompanySelect();
+                roleSelect.addEventListener("change", toggleCompanySelect);
+            }
+        });
+    </script>
+}

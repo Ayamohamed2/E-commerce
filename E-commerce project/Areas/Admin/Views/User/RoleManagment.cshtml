@@ -1,0 +1,81 @@
+﻿@model UserVM
+
+@{
+    SelectList roles = new SelectList(Model.RoleList, "Name", "Name");
+    SelectList companies = new SelectList(Model.CompanyList, "id", "Name");
+}
+}
+
+
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Manage User Role</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" asp-action="RoleManagment" asp-controller="user" asp-route-userId="@Model.User.Id" class="row">
+            <div class="border p-3">
+                <div asp-validation-summary="All"></div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="User.Name" class="form-control border-0 shadow" readonly />
+                    <label class="ms-2" asp-for="User.Name"></label>
+                  
+                </div>
+                <div class="form-floating mb-4">
+                    <select asp-for="User.Role" asp-items="roles"
+                            class="form-select rounded-3" id="roleSelect">
+                        <option value="">-- Select Role --</option>
+                    </select>
+                </div>
+
+                <div class="form-floating mb-4" id="companySelectWrapper" style="display:none;">
+                    <select asp-for="User.Company_Id" asp-items="companies"
+                            class="form-select rounded-3">
+                        <option value="">-- Select Company --</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 row">
+                    <div class="col-6 ">
+                        <button class="btn btn-secondary form-control" type="submit">Update Role</button>
+                    </div>
+
+                    <div class="col-6 ">
+                        <a class=" btn btn-outline-secondary form-control" asp-action="index">Back to List</a>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleSelect = document.getElementById("roleSelect");
+            const companySelectWrapper = document.getElementById("companySelectWrapper");
+
+            function toggleCompanySelect() {
+                if (roleSelect.value.toLowerCase() === "company") {
+                    companySelectWrapper.style.display = "block";
+                } else {
+                    companySelectWrapper.style.display = "none";
+                }
+            }
+
+            toggleCompanySelect();
+
+            roleSelect.addEventListener("change", toggleCompanySelect);
+        });
+    </script>
+}

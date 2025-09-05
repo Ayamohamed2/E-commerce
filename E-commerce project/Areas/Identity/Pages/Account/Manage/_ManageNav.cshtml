@@ -1,0 +1,50 @@
+﻿@* @using E_commerce.Model.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+@* 
+<div class="card bg-dark border-0 shadow-sm rounded-4 mt-3">
+    <div class="card-body p-0">
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a class="nav-link text-white @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+                    <i class="bi bi-envelope"></i> Email
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">
+                    <i class="bi bi-lock"></i> Password
+                </a>
+            </li>*/
+            @if (hasExternalLogins)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-white @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">
+                        <i class="bi bi-box-arrow-in-right"></i> External Logins
+                    </a>
+                </li>
+            }/*
+            <li class="nav-item">
+                <a class="nav-link text-white @ManageNavPages.PersonalDataNavClass(ViewContext)" asp-page="./PersonalData">
+                    <i class="bi bi-file-earmark-text"></i> Personal Data
+                </a>
+            </li>
+        </ul>
+    </div>
+</div> @if (hasExternalLogins)
+{
+    <li class="nav-item mb-2">
+        <a class="nav-link text-white @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">
+            <i class="bi bi-lock"></i> Password
+        </a>
+    </li>
+} 
+ *@
+

@@ -1,0 +1,121 @@
+﻿@{
+    SelectList category = new SelectList(ViewBag.categories,"Id","Name");
+}
+@model Product
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Create Product</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" asp-action="Create" enctype="multipart/form-data" asp-controller="product" class="row">
+       
+            <div class="border p-3">
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="title" class="form-control border-0 shadow" />
+                    <label class="ms-2">Title</label>
+                    <span asp-validation-for="title" class="text-danger"></span>
+                </div>
+               <div class=" py-2 col-12">
+					<label class="ms-2 text-muted">Discription</label>
+                    <textarea asp-for="Discription" class="form-control border-0 shadow " id="myEditor"></textarea>
+                  
+                    <span asp-validation-for="Discription" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ISBN" class="form-control border-0 shadow" />
+                    <label class="ms-2">ISBN</label>
+                    <span asp-validation-for="ISBN" class="text-danger"></span>
+                </div>
+
+               
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="Author" class="form-control border-0 shadow" />
+                    <label class="ms-2">Author</label>
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ListPrice" class="form-control border-0 shadow" />
+                    <label class="ms-2" asp-for="ListPrice"></label>
+                    <span asp-validation-for="ListPrice" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="price" class="form-control border-0 shadow" />
+                    <label class="ms-2" asp-for="price"></label>
+                    <span asp-validation-for="price" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="price50" class="form-control border-0 shadow" />
+                    <label class="ms-2" asp-for="price50"></label>
+                    <span asp-validation-for="price50" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="price100" class="form-control border-0 shadow" />
+                    <label class="ms-2" asp-for="price100"></label>
+                    <span asp-validation-for="price100" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="files" type="file" class="form-control border-0 shadow" multiple />
+                    <label class="ms-2" >Image</label>
+                    <span asp-validation-for="files" class="text-danger"></span>
+                </div> 
+                     <div class="form-floating py-2 col-12">
+                   <select asp-for="Category_id" asp-items="category" class="form-select  border-0 shadow">
+                       <option value="">--Select Category--</option>
+                   </select>
+                          <label class="ms-2">Category</label>
+                  <span asp-validation-for="Category_id" class="text-danger"></span>
+                </div>
+                <div class="pt-2 row">
+                    <div class="col-6 ">
+                        <button class="btn btn-secondary form-control" type="submit">Create</button>
+                    </div>
+
+                    <div class="col-6 ">
+                        <a class=" btn btn-outline-secondary form-control" asp-action="index">Back to List</a>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Sep 19, 2025:
+                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'ai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+            uploadcare_public_key: '65d2ebb101e3091468f8',
+        });
+    </script>
+        <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,157 @@
+﻿@model ShoppingCart
+
+<form method="post" class="container py-5" asp-action="Details">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+   
+        <input type="hidden" asp-for="Product_Id" />
+        <div class="bg-gradient bg-dark text-white text-center py-5 px-3">
+            <h1 class="display-5 fw-bold text-uppercase">@Model.Product?.title</h1>
+            <p class="fs-5 opacity-75 mb-0">by <span class="fw-semibold">@Model.Product?.Author</span></p>
+            <span class="badge bg-warning text-dark fs-6 mt-3">@Model.Product?.Category?.Name</span>
+        </div>
+
+        <div class="card-body p-5">
+            <div class="row g-5 align-items-start">
+
+               
+                <div class="col-12 col-lg-4 text-center">
+                    <div id="productCarousel" class="carousel slide shadow-sm rounded-4 overflow-hidden" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @if (Model.Product?.ProductImages != null && Model.Product.ProductImages.Any())
+                            {
+                                for (int i = 0; i < Model.Product.ProductImages.Count; i++)
+                                {
+                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                        <img src="@Model.Product.ProductImages[i].ImageURL"
+                                             alt="Product Image @i"
+                                             class="d-block w-100"
+                                             style="object-fit:cover; max-height:400px;" />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="carousel-item active">
+                                    <img src="~/images/no-image.png"
+                                         alt="No Image"
+                                         class="d-block w-100"
+                                         style="object-fit:cover; max-height:400px;" />
+                                </div>
+                            }
+                        </div>
+
+                      
+                        <div class="carousel-indicators">
+                            @if (Model.Product?.ProductImages != null && Model.Product.ProductImages.Any())
+                            {
+                                for (int i = 0; i < Model.Product.ProductImages.Count; i++)
+                                {
+                                    <button type="button"
+                                            data-bs-target="#productCarousel"
+                                            data-bs-slide-to="@i"
+                                            class="@(i == 0 ? "active" : "")"
+                                            aria-current="@(i == 0 ? "true" : "false")"
+                                            aria-label="Slide @(i + 1)"></button>
+                                }
+                            }
+                        </div>
+
+                   
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
+                        </button>
+                    </div>
+
+                    <a href="/Customer/home/" class="btn btn-outline-secondary mt-4 w-100 fw-semibold rounded-pill">
+                        ⬅ Back to Home
+                    </a>
+
+
+                    <a href="/Customer/feedback/feedback/+@Model.Product_Id" class="btn btn-outline-secondary mt-4 w-100 fw-semibold rounded-pill">
+                        See Feedbacks
+                    </a>
+                </div>
+
+                
+                <div class="col-12 col-lg-8">
+
+                    <p class="text-muted fs-6 mb-4">
+                        <strong>ISBN:</strong> <span class="fw-semibold">@Model.Product?.ISBN</span>
+                    </p>
+
+                   
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-body">
+                            <h5 class="text-muted mb-3">
+                                List Price:
+                                <span class="text-decoration-line-through">@Model.Product?.ListPrice.ToString("c")</span>
+                            </h5>
+
+                            <div class="row text-center">
+                                <div class="col border-end">
+                                    <p class="mb-1 text-muted">1-50</p>
+                                    <p class="fw-bold text-success fs-5">@Model.Product?.price.ToString("c")</p>
+                                </div>
+                                <div class="col border-end">
+                                    <p class="mb-1 text-muted">51-100</p>
+                                    <p class="fw-bold text-success fs-5">@Model.Product?.price50.ToString("c")</p>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-1 text-muted">100+</p>
+                                    <p class="fw-bold text-success fs-5">@Model.Product?.price100.ToString("c")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="fw-bold mb-3 text-dark">📖 About this Book</h4>
+                        <p class="text-secondary lh-lg fs-6">@Html.Raw(Model.Product?.Discription)</p>
+                    </div>
+
+           
+                    <div class="mb-4 col-md-6">
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-dark text-white border-0 fw-semibold rounded-start-pill">
+                                Count
+                            </span>
+                            <input asp-for="count" type="number" value="1" min="1" class="form-control text-center border-dark rounded-end-pill " />
+                        </div>
+                    </div>
+
+                 
+                    <div>
+                        <button type="submit"
+                                class="btn btn-warning w-100 py-3 rounded-pill fs-5 fw-bold shadow-lg transition">
+                            🛒 Add to Cart <span class="opacity-75"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+  
+    .hover-shadow:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .transition {
+        transition: all 0.3s ease-in-out;
+    }
+
+    
+    .carousel-indicators [data-bs-target] {
+        background-color: #fff;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+</style>

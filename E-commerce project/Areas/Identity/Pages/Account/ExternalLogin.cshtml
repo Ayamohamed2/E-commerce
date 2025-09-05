@@ -1,0 +1,41 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-white">
+    <div class="card shadow-lg border-0 rounded-4 p-5" style="max-width: 450px; width: 100%;">
+
+        <h2 class="fw-bold text-center mb-3 text-dark">
+            Register with @Model.ProviderDisplayName
+        </h2>
+        <p class="text-muted text-center mb-4">
+            You’ve successfully authenticated with <strong>@Model.ProviderDisplayName</strong> 🎉
+            Please enter your email to finish creating your account.
+        </p>
+
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3" role="alert"></div>
+
+            <div class="form-floating mb-4">
+                <input asp-for="Input.Email"
+                       class="form-control rounded-3"
+                       autocomplete="email"
+                       placeholder="Enter your email" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <button type="submit"
+                    class="btn w-100 py-3 fw-bold rounded-3 text-white"
+                    style="background: linear-gradient(135deg, #5a9a9c, #417678); border:none;">
+                Register
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
